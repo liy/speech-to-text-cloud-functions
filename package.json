@@ -1,0 +1,14 @@
+{
+  "name": "speech-to-text-cloud-functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gcloud functions deploy cloud-transcribe --project=ao-speech-to-tex-1553895570081 --runtime=nodejs8 --trigger-http --entry-point=transcribe --memory=128MB"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/speech": "^2.3.1"
+  }
+}
