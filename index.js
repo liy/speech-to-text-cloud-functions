@@ -1,7 +1,8 @@
 const speech = require('@google-cloud/speech').v1p1beta1;
 const client = new speech.SpeechClient();
+const admin = require('firebase-admin');
 
-const gcsUri = 'gs://ao-speech-to-text-test-bucket/video-gb.flac'
+const gcsUri = 'gs://speech-to-text-hackday/examples/video-gb.flac'
 
 const config = {
   encoding: 'FLAC',
