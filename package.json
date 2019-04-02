@@ -7,7 +7,7 @@
     "deploy": "npm run transcribe && npm run sendNotification && npm run extractAudio",
     "transcribe": "gcloud functions deploy transcribe --project=speech-to-text-236211 --runtime=nodejs8 --trigger-http --entry-point=transcribe --memory=128MB",
     "sendNotification": "gcloud functions deploy sendNotification --project=speech-to-text-236211 --runtime=nodejs8 --trigger-http --entry-point=sendNotification --memory=128MB",
-    "extractAudio": "gcloud functions deploy extractAudio --project=speech-to-text-236211 --runtime=nodejs8 --trigger-http --entry-point=extractAudio --memory=128MB"
+    "extractAudio": "gcloud functions deploy extractAudio --project=speech-to-text-236211 --runtime=nodejs8 --trigger-http --entry-point=extractAudio --memory=512MB"
   },
   "author": "",
   "license": "ISC",

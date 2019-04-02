@@ -12,7 +12,7 @@ const storage = new Storage({ projectId: 'speech-to-text-236211' });
 
 const bucket = storage.bucket('speech-to-text-hackday');
 const readStream = bucket.file('examples/video-gb.mp4').createReadStream();
-const writeStream = bucket.file('audios/video-gb.flac').createWriteStream();
+const writeStream = bucket.file('audios/video-gb.wav').createWriteStream();
 
 // TODO: Create a cloud function to extracaudio. There are two options:
 // 1. Write a physical file to storage, ask speech to text API to read it
@@ -31,7 +31,7 @@ exports.extractAudio = (req, res) => {
 			console.error('stderr:', stderr);
 			res.status(400).send('Error on conversion: ' + err.message);
 		})
-		.outputFormat('flac')
+		.outputFormat('wav')
 		.pipe(
 			writeStream,
 			{ end: true }
