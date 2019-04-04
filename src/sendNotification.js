@@ -20,13 +20,13 @@ const app = admin.initializeApp({
 // You have to invalidate all the existing registration token(if it is been stored anywhere)
 // registration token is obtained from client side, the id to identify the client device
 var registrationToken =
-	'fgBtFlTpaSw:APA91bGupRL4otSEXDEn0jpwZDsGmpWe1K-6aAaz_SD-IMvFxRNy_yz4WEXQxm35_l5a7JQcsE5JdwjigcLFIjfi7r_Q9Fukz-xlE-1l3RI3kG1sCf7ebKLHvfw_aAyJB1VPiNkTtVot';
+	'c7xEHqDQFTU:APA91bF-06_dwIMckxCmf4tnlmy9xqsL0b430WXN5M5amdfQbRU092OXBWW0tmx3LuUszAdqRKEID1lmeiDEypDRI99jW_oERkPQvucio941BWyXSGAMNoKlncok7ai95BccEzON6mmh';
 // There is a specific message format: https://firebase.google.com/docs/cloud-messaging/concept-options
 var message = {
 	token: registrationToken,
 	notification: {
-		title: 'Portugal vs. Denmark',
-		body: 'great match!'
+		title: 'Hi, things are working!',
+		body: 'Your video has been uploaded :)'
 	}
 };
 
