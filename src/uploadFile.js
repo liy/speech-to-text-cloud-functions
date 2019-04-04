@@ -3,13 +3,14 @@ const storage = new Storage({ projectId: 'speech-to-text-236211' });
 
 const bucket = storage.bucket('speech-to-text-hackday');
 
+const Duplex = require('stream').Duplex;
 
 exports.uploadFile = async (req, res) => {
 	res.set('Access-Control-Allow-Origin', '*');
 
 	if (req.method === 'OPTIONS') {
     // Send response to OPTIONS requests
-		res.set('Access-Control-Allow-Methods', 'GET');
+		res.set('Access-Control-Allow-Methods', 'POST');
 		res.set('Access-Control-Allow-Headers', 'Content-Type');
 		res.set('Access-Control-Max-Age', '3600');
 		res.status(204).send('');
@@ -17,24 +18,20 @@ exports.uploadFile = async (req, res) => {
 		// Set CORS headers for the main request
 		res.set('Access-Control-Allow-Origin', '*');
 
-    // get the data
-    const { file, token } = Buffer.from(req.body);
+    const { guid, file, token } = req.body;
 
-    await storage.bucket(bucketName).upload(file, {
-      gzip: true,
-      metadata: {
-        cacheControl: 'public, max-age=31536000',
-      }
-    });
+    const decoded = Buffer.from(file, 'base64');
+    const stream = new Duplex();
 
-    await storage.bucket(bucketName).upload(token, {
-      gzip: true,
-      metadata: {
-        cacheControl: 'public, max-age=31536000',
-      }
-    });
+    stream.push(decoded);
+    stream.push(null);
 
-    console.log('uploaded file')
+    const tempFile = bucket.file('uploads/randomfile');
+
+    const writeStream = tempFile.createWriteStream();
+
+    stream.pipe(writeStream, { end: true });
+
     res.status(200).send('this is the response');
 	}
 };
