@@ -19,18 +19,32 @@ const app = admin.initializeApp({
 // Also note that registration token is bound to project, if you changed service account, or login account for your project.
 // You have to invalidate all the existing registration token(if it is been stored anywhere)
 // registration token is obtained from client side, the id to identify the client device
-var registrationToken =
-	'c7xEHqDQFTU:APA91bF-06_dwIMckxCmf4tnlmy9xqsL0b430WXN5M5amdfQbRU092OXBWW0tmx3LuUszAdqRKEID1lmeiDEypDRI99jW_oERkPQvucio941BWyXSGAMNoKlncok7ai95BccEzON6mmh';
+// var registrationToken =
+// 	'c7xEHqDQFTU:APA91bF-06_dwIMckxCmf4tnlmy9xqsL0b430WXN5M5amdfQbRU092OXBWW0tmx3LuUszAdqRKEID1lmeiDEypDRI99jW_oERkPQvucio941BWyXSGAMNoKlncok7ai95BccEzON6mmh';
 // There is a specific message format: https://firebase.google.com/docs/cloud-messaging/concept-options
 var message = {
-	token: registrationToken,
+  token: null,
 	notification: {
 		title: 'Hi, things are working!',
-		body: 'Your video has been uploaded :)'
+		body: 'Your video has been transcribed :)'
 	}
 };
 
 function sendNotification(req, res) {
+  res.set('Access-Control-Allow-Origin', '*');
+	if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+		res.set('Access-Control-Allow-Methods', 'POST');
+		res.set('Access-Control-Allow-Headers', 'Content-Type');
+		res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+    return;
+  } 
+
+  const {token} = req.body;
+
+  message.token = token;
+
 	// Send a message to the device corresponding to the provided registration token.
 	admin
 		.messaging()

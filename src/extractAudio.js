@@ -3,6 +3,7 @@ const ffmpeg = require('fluent-ffmpeg');
 // ffmpeg static install correct ffmpeg automatically for you
 const ffmpegStatic = require('ffmpeg-static');
 const ffprobeStatic = require('ffprobe-static');
+const axios = require('axios');
 // Points fluent-ffmpeg to the right location to look for ffmpeg
 ffmpeg.setFfmpegPath(ffmpegStatic.path);
 ffmpeg.setFfprobePath(ffprobeStatic.path);
@@ -11,18 +12,47 @@ const { Storage } = require('@google-cloud/storage');
 const storage = new Storage({ projectId: 'speech-to-text-236211' });
 
 const bucket = storage.bucket('speech-to-text-hackday');
-const readStream = bucket.file('examples/video-gb.mp4').createReadStream();
-const writeStream = bucket.file('audios/video-gb.wav').createWriteStream();
+// const readStream = bucket.file('examples/video-gb.mp4').createReadStream();
+// const writeStream = bucket.file('audios/video-gb.wav').createWriteStream();
 
 // TODO: Create a cloud function to extracaudio. There are two options:
 // 1. Write a physical file to storage, ask speech to text API to read it
 // 2. Pipe the readStream of the audio directly to speech to text API
 exports.extractAudio = (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+	if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+		res.set('Access-Control-Allow-Methods', 'POST');
+		res.set('Access-Control-Allow-Headers', 'Content-Type');
+		res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+    return;
+  }
+    
+  const {token, filename} = req.body;
+
+  const waveFileName = filename.split('.')[0] + '.wav';
+  const wavePath = `audios/${waveFileName}`;
+  const readStream = bucket.file(`uploads/${filename}`).createReadStream();
+  const writeStream = bucket.file(wavePath).createWriteStream();
+
 	ffmpeg()
 		.input(readStream)
 		.inputFormat('mp4')
 		.on('end', () => {
-			console.log('Successfully converted video');
+      console.log('Successfully converted video');
+      
+      // send request to transcribe
+      axios.post("https://us-central1-speech-to-text-236211.cloudfunctions.net/transcribe", {
+        path: wavePath,
+        token,
+        filename: waveFileName
+      }, {
+        headers: {
+          'content-type': 'application/json'
+        }
+      });
+
 			res.status(200).send('Successfully converted video');
 		})
 		.on('error', (err, stdout, stderr) => {

@@ -22,16 +22,16 @@ exports.uploadFile = async (req, res) => {
 
     const decoded = Buffer.from(file, 'base64');
     const stream = new Duplex();
+    stream.on('end', () => {
+      res.status(200).send('Done');
+    })
 
     stream.push(decoded);
-    stream.push(null);
+    // stream.push(null);
 
-    const tempFile = bucket.file('uploads/randomfile');
-
-    const writeStream = tempFile.createWriteStream();
+    const videoFile = bucket.file(`uploads/${guid}.mp4`);
+    const writeStream = videoFile.createWriteStream();
 
     stream.pipe(writeStream, { end: true });
-
-    res.status(200).send('this is the response');
 	}
 };
